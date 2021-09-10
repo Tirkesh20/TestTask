@@ -10,8 +10,17 @@
       <div class="col-sm-10">
         <select th:field="*{__${name}__}">
           <option th:each="item : ${items}" th:value="${item.firstName}"
-                  th:text="${item.firstName+' '+ item.lastName +' ' }"></option>
+                  th:text="${item.firstName}">Name</option>
         </select>
+        <span th:if="${valid}"
+              class="glyphicon glyphicon-ok form-control-feedback"
+              aria-hidden="true"></span>
+        <th:block th:if="${!valid}">
+            <span
+              class="glyphicon glyphicon-remove form-control-feedback"
+              aria-hidden="true"></span>
+          <span class="help-inline" th:errors="*{__${name}__}">Error</span>
+        </th:block>
       </div>
     </div>
   </th:block>

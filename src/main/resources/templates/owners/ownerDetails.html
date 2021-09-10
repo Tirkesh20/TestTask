@@ -2,15 +2,12 @@
 
 <html xmlns:th="https://www.thymeleaf.org"
   th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
-<head>
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}"/>
-</head>
+
   <body>
   
   
     <h2>Owner Information</h2>
-  
-  
+
     <table class="table table-striped" th:object="${owner}">
       <tr>
         <th>Name</th>
@@ -60,11 +57,15 @@
               <tr>
                 <th>Visit Date</th>
                 <th>Description</th>
+                <th>Veterinary</th>
               </tr>
             </thead>
             <tr th:each="visit : ${pet.visits}">
               <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"></td>
               <td th:text="${visit?.description}"></td>
+              <td th:text="${visit?.vet.fullName}"></td>
+              <td><a th:href="@{/owners/{ownerId}/pets/{petId}/visits/{visitId}/edit(ownerId=${owner.id},petId=${pet.id},visitId=${visit.id})}">Edit
+                Visit</a></td>
             </tr>
             <tr>
               <td><a

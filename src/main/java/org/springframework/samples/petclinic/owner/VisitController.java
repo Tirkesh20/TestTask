@@ -22,11 +22,11 @@ import javax.validation.Valid;
 
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
-import org.springframework.samples.petclinic.vet.Vets;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -83,9 +83,11 @@ class VisitController {
 		return this.vetRepository.findAll();
 	}
 
-	@ModelAttribute("types")
-	public Collection<PetType> populatePetTypes() {
-		return this.pets.findPetTypes();
+	@GetMapping("/owners/*/pets/{petId}/visits/{visitId}/edit")
+	public String initEditVisitForm(@PathVariable("petId") int visitId, ModelMap model) {
+		Visit visit=this.visits.getVisitById(visitId);
+		model.put("visit",visit);
+		return "pets/createOrUpdateVisitForm";
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
@@ -101,6 +103,19 @@ class VisitController {
 			return "pets/createOrUpdateVisitForm";
 		}
 		else {
+			this.visits.save(visit);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
+
+	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/{visitId}/edit")
+	public String processEditVisitForm(@PathVariable("visitId")int visitId, @Valid Visit visit, BindingResult result) {
+		if (result.hasErrors()) {
+			return "pets/createOrUpdateVisitForm";
+		}
+		else {
+			System.out.println(visitId);
+			visit.setId(visitId);
 			this.visits.save(visit);
 			return "redirect:/owners/{ownerId}";
 		}
