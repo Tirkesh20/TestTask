@@ -25,7 +25,6 @@ import org.springframework.samples.petclinic.vet.VetRepository;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -69,6 +68,7 @@ class VisitController {
 	 * @param petId
 	 * @return Pet
 	 */
+
 	@ModelAttribute("visit")
 	public Visit loadPetWithVisit(@PathVariable("petId") int petId,Map<String, Object> model) {
 		Pet pet = this.pets.findById(petId);
@@ -78,17 +78,12 @@ class VisitController {
 		pet.addVisit(visit);
 		return visit;
 	}
+
 	@ModelAttribute("vets")
 	public Collection<Vet> loadVets() {
 		return this.vetRepository.findAll();
 	}
 
-	@GetMapping("/owners/*/pets/{petId}/visits/{visitId}/edit")
-	public String initEditVisitForm(@PathVariable("petId") int visitId, ModelMap model) {
-		Visit visit=this.visits.getVisitById(visitId);
-		model.put("visit",visit);
-		return "pets/createOrUpdateVisitForm";
-	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is called
 	@GetMapping("/owners/*/pets/{petId}/visits/new")
@@ -108,13 +103,27 @@ class VisitController {
 		}
 	}
 
+	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/{visitId}/cancel")
+	public String processCancelVisitForm(@PathVariable("visitId")int visitId, @Valid Visit visit, BindingResult result) {
+			visit.setDescription("Canceled Visit");
+			return "redirect:/owners/{ownerId}";
+	}
+
+
+	@GetMapping("/owners/*/pets/{petId}/visits/{visitId}/edit")
+	public String initEditVisitForm(@PathVariable("petId") int visitId, ModelMap model) {
+		Visit visit=this.visits.getVisitById(visitId);
+		model.put("visit",visit);
+		return "pets/createOrUpdateVisitForm";
+	}
+
+
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/{visitId}/edit")
 	public String processEditVisitForm(@PathVariable("visitId")int visitId, @Valid Visit visit, BindingResult result) {
 		if (result.hasErrors()) {
 			return "pets/createOrUpdateVisitForm";
 		}
 		else {
-			System.out.println(visitId);
 			visit.setId(visitId);
 			this.visits.save(visit);
 			return "redirect:/owners/{ownerId}";
