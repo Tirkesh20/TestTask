@@ -31,6 +31,6 @@ public class VetFormatter implements Formatter<Vet> {
 
 	@Override
 	public String print(Vet vet, Locale locale) {
-		return null;
+		return vet.getFirstName();
 	}
 }
