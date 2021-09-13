@@ -111,7 +111,7 @@ class VisitController {
 
 
 	@GetMapping("/owners/*/pets/{petId}/visits/{visitId}/edit")
-	public String initEditVisitForm(@PathVariable("petId") int visitId, ModelMap model) {
+	public String initEditVisitForm(@PathVariable("visitId") int visitId, ModelMap model) {
 		Visit visit=this.visits.getVisitById(visitId);
 		model.put("visit",visit);
 		return "pets/createOrUpdateVisitForm";
