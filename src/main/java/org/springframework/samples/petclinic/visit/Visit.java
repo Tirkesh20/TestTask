@@ -51,6 +51,9 @@ public class Visit extends BaseEntity {
 	@JoinColumn(name = "vet_id")
 	private Vet vet;
 
+	@Column(name="status")
+	private VisitStatus status=VisitStatus.ACTIVE;
+
 	/**
 	 * Creates a new instance of Visit for the current date
 	 */
@@ -88,5 +91,20 @@ public class Visit extends BaseEntity {
 
 	public void setVet(Vet vet) {
 		this.vet = vet;
+	}
+
+	public VisitStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(VisitStatus status) {
+		this.status = status;
+	}
+
+	public enum VisitStatus{
+		ACTIVE("active"),CANCELED("canceled");
+
+		VisitStatus(String status) {
+		}
 	}
 }

@@ -104,8 +104,10 @@ class VisitController {
 	}
 
 	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/{visitId}/cancel")
-	public String processCancelVisitForm(@PathVariable("visitId")int visitId, @Valid Visit visit, BindingResult result) {
-			visit.setDescription("Canceled Visit");
+	public String processCancelVisitForm(@PathVariable("visitId")int visitId) {
+		Visit visit=visits.getVisitById(visitId);
+		visit.setStatus(Visit.VisitStatus.CANCELED);
+		visits.save(visit);
 			return "redirect:/owners/{ownerId}";
 	}
 
